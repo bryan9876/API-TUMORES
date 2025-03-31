@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DETECTOR DE TUMORES</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>DETECTOR DE POSIBLES TUMORES CEREBRALES</h1>
+        
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".png,.jpg,.jpeg,.dcm" required>
+            <button type="submit">CARGAR</button>
+        </form>
+        
+        {% if original_image %}
+        <div class="results">
+            <h2>RESULTADO</h2>
+            
+            <div class="diagnosis">
+                {% if has_tumor %}
+                <p class="alert danger">SE DETECTO UN POSIBLE TUMOR: (Confianza: {{ confidence }})</p>
+                {% else %}
+                <p class="alert success">NO SE DETECTO NINGUN POSIBLE TUMOR (Confianza: {{ confidence }})</p>
+                {% endif %}
+            </div>
+            
+            <div class="image-grid">
+                <div class="image-card">
+                    <h3>IMAGEN ORIGINAL</h3>
+                    <img src="{{ url_for('static', filename='uploads/' + original_image.split('/')[-1]) }}" alt="Original">
+                </div>
+                
+                <div class="image-card">
+                    <h3>CONTORNOS DETECTADOS</h3>
+                    <img src="{{ url_for('static', filename=result_images.contours) }}" alt="Contornos">
+                </div>
+                
+                <div class="image-card">
+                    <h3>MAPA DE COLOR</h3>
+                    <img src="{{ url_for('static', filename=result_images.heatmap) }}" alt="Mapa de Calor">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
